@@ -20,9 +20,14 @@ class SupplierController extends Controller
         $products = Product::all();
         if($user->is_admin==1){
         return view('suppliers.index', ['suppliers' => $supplier,'products' => $products]);
-    }else{
+        }
+        elseif($user->is_admin==0){
+        return view('suppliers.index', ['suppliers' => $supplier,'products' => $products]);
+        }
+        else{
         return redirect(route('cashier-content'));
     }
+    
     }
     
     /**

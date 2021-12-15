@@ -43,12 +43,16 @@
                         <input type="text" name="brand" id="" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="">Price</label>
-                        <input type="number" name="price" id="" class="form-control">
+                        <label for="">Based Price</label>
+                        <input type="number" name="based_price" id="" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="">Quantity</label>
-                        <input type="number" name="quantity" id="" class="form-control">
+                        <label for="">Selling Price</label>
+                        <input type="number" name="price" id="" class="form-control">
+                    </div>
+                    <div class="form-group" >
+                        
+                        <input type="hidden" name="quantity" value="0" id="" class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="">Alert Stock</label>
@@ -96,6 +100,7 @@
                 $('#e').val(data.quantity);
                 $('#f').val(data.alert_stock);
                 $('#g').val(data.description);
+                $('#j').val(data.based_price);
                 $('#i').prop('src',"{{ asset('product/image/')}}"+data.product_image);
             });
             $('#editproduct').modal('show');

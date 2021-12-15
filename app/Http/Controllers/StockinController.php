@@ -41,11 +41,14 @@ class StockinController extends Controller
         $stocks = Stockin::all();
         
 
-
         if($user->is_admin==1){
+        return view('stocks.index', ['suppliers' => $suppliers,'products' => $products,'stocks' => $stocks,'users' => $users]);
+        }
+        elseif($user->is_admin==0){
             return view('stocks.index', ['suppliers' => $suppliers,'products' => $products,'stocks' => $stocks,'users' => $users]);
-        }else{
-            return redirect(route('cashier-content'));
+        }
+        else{
+        return redirect(route('cashier-content'));
         }
     }
 
@@ -71,12 +74,16 @@ class StockinController extends Controller
         $stock->product_id = $request->product_id;  
         $stock->quantity = $request->quantity;
         $stock->supplier = $request->supplier_name;
-        $stock->user_id = auth()->user()->id;
+        $stock->receiver = auth()->user()->name;
         $stock->remarks = $request->remarks;
+        $stock->based_price = $request->based_price;
+        $stock->price = $request->price;
         $stock->save();
         
         $prod = Product::find($request->product_id);
         $prod->quantity = $prod->quantity + $request->quantity;
+        $prod->based_price = $request->based_price;
+        $prod->price = $request->price;
         $prod->save();
 
 

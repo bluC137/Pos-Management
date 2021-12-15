@@ -8,10 +8,14 @@ use App\Product;
 use App\Cart;
 use App\Order_Detail;
 use App\Order;
+
+use App\Returned;
+use Carbon\Carbon;
 // use App\Http\Controllers\DB;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use Validator;
+use PDF;
 use Illuminate\Support\Facades\DB;
 class HomeController extends Controller
 {
@@ -43,13 +47,39 @@ class HomeController extends Controller
             array_push($product_datas,$product->product_id);
         }
         $unsolds = Product::whereNotIn('id',$product_datas)->get();
-        if($user->is_admin==1){
-            return view('home', ['transactions' => $transactions,'products' => $products,'unsolds'=>$unsolds]);
-        }else{
-            return redirect(route('cashier-content'));
-        }
-    }
+    
 
+        if($user->is_admin==1){
+        return view('home', ['transactions' => $transactions,'products' => $products,'unsolds'=>$unsolds]);
+        }
+        elseif($user->is_admin==0){
+        return view('home', ['transactions' => $transactions,'products' => $products,'unsolds'=>$unsolds]);
+        }
+        else{
+        return redirect(route('cashier-content'));
+        }
+        
+    }
+    public function print_sales_report(Request $request){
+        $user = Auth::user();
+        $data = $request->all();
+       
+        $selectQuery = Transaction::with('order_detail')->whereBetween('transac_date',[$data['Startdate'],$data['Enddate']])->get();
+        // return $selectQuery;
+        $title = date('F d,Y',strtotime($data['Startdate'])).' TO '.date('F d,Y',strtotime($data['Enddate']));
+        $pdf = PDF::loadView('print_sales', array('selectQuery'=>$selectQuery,'title'=>$title));
+        return $pdf->stream();
+    }
+    public function print_product_sales(Request $request){
+        $user = Auth::user();
+        $data = $request->all();
+       
+        $selectQuery = Order_Detail::with('product_data')->whereBetween('created_at',[$data['Startdate'],$data['Enddate']])->groupBy('product_id')->get();
+    //    return $selectQuery;
+        $title = date('F d,Y',strtotime($data['Startdate'])).' TO '.date('F d,Y',strtotime($data['Enddate']));
+        $pdf = PDF::loadView('print_product_sales', array('selectQuery'=>$selectQuery,'title'=>$title,'data'=>$data));
+        return $pdf->stream();
+    }
     public function find()
     {
         // $titles = DB::table('users')->pluck('title');
@@ -178,11 +208,29 @@ class HomeController extends Controller
             }elseif($postMode=='select-product'){
                 $selectQuery = Product::find($data['id']);
                 return $selectQuery;
+            }elseif($postMode=='count-for-approval'){
+                $count = Cart::where('temp_discount','>',0)->where('discount_status',0)->count();
+                return $count;
             }elseif($postMode=='save-cart'){
                 $update = Cart::find($data['id']);
                 $update->product_price = $data['price'];
-                $update->discount = $data['total_discount'];
+                // $update->discount = $data['total_discount'];
+                $update->temp_discount = $data['total_discount'];
                 $update->discount_percentage = $data['discount_percetage'];
+                $update->discount_status = 0;
+                $update->save();
+            }elseif($postMode=='approved-discount'){
+                $update = Cart::find($data['id']);
+                $update->discount = $update->temp_discount;
+                $update->discount_status = 1;
+                $update->temp_discount = null;
+                $update->save();
+            }elseif($postMode=='decline-discount'){
+                $update = Cart::find($data['id']);
+                $update->discount = null;
+                $update->discount_status = 2;
+                $update->discount_percentage = null;
+                $update->temp_discount = null;
                 $update->save();
             }elseif($postMode=='product-details'){
                 $products = Order_Detail::with('product_data')->where('order_id',$data['order_id'])->get();
@@ -272,9 +320,13 @@ class HomeController extends Controller
                 $update->reason = $data['reason'];
                 $update->quantity = 0;
                 if($update->save()){
-                    $updateProduct = Product::find($update->product_id);
-                    $updateProduct->quantity = intval($updateProduct->quantity)+intval($quatity);
-                    $updateProduct->save();
+                     $date = Carbon::now();
+                     $returnProduct = new Returned;
+                     $returnProduct->product_name = $this->productData($update->product_id);
+                     $returnProduct->quantity = $quatity;
+                     $returnProduct->reason = $update->reason = $data['reason'];
+                     $returnProduct->date = $date;
+                     $returnProduct->save();
                 }
                 return back();
             }else{

@@ -3,12 +3,23 @@
 @section('content')
 
 <div class="container-fluid">
+    
     <div class="row ">
-        <div class="col-md-6">
+    
+       
+        <div class="col-md-12">
             <div class="card">
                 <h4 class="card-header" style="background: #1f2833; color: #edf6ff">
                     <marquee behavior="" direction="">Welcome to Boyong's Electronics Store</marquee>
                 </h4>
+                <div class="row p-3">
+                <div class="col-md-12"   align="right">
+                    <br>
+                    <button class="btn btn-info text-white" data-toggle="modal" data-target="#sales-report"> <span class="fas fa-file-invoice-dollar text-white"></span> Sales Report</button>
+                    <button class="btn btn-success text-white" data-toggle="modal" data-target="#product-sales-report" ><span class="fas fa-funnel-dollar text-white"></span> Product Expenses Report</button>
+                </div>
+                </div>
+                
                 @php
                     $total = 0;
                     $alltrans = array();
@@ -76,7 +87,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header" style="background: #1f2833; color: #edf6ff">Products</div>
                 <div class="card-body">
@@ -125,6 +136,69 @@
         </div>
         
     </div>
+</div>
+<!-- =============================================== -->
+<div id="sales-report" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Sales Report</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+            <form target="_blank" action="{{route('sales-report')}}" id="sales-report-form" method="GET" enctype="multipart/form-data" autocomplete="off">
+                @csrf
+            <div class="form-group">
+                <b>Select Date Range </b>
+                <div class="input-group mb-3">
+                    <input type="date" name="Startdate" class="form-control" required />
+                    <div class="input-group-prepend">
+                    <span class="input-group-text">TO</span>
+                    </div>
+                    <input type="date" name="Enddate" class="form-control" required />
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success" form="sales-report-form" >Submit</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="product-sales-report" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Product Sales Report</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+            <form target="_blank" action="{{route('product-report')}}" id="product-report-form" method="GET" enctype="multipart/form-data" autocomplete="off">
+                @csrf
+            <div class="form-group">
+                <b>Select Date Range </b>
+                <div class="input-group mb-3">
+                    <input type="date" name="Startdate" class="form-control" required />
+                    <div class="input-group-prepend">
+                    <span class="input-group-text">TO</span>
+                    </div>
+                    <input type="date" name="Enddate" class="form-control" required />
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success" form="product-report-form" >Submit</button>
+      </div>
+    </div>
+
+  </div>
 </div>
 @endsection
 
@@ -261,7 +335,7 @@ function chartData(start,end){
             theme: "light2", // "light1", "light", "dark1", "dark2"
            
             axisY: {
-                title: "Revenue",
+                title: "Sales",
                 prefix: "₱"
             },
             data: [{
@@ -282,7 +356,7 @@ function productChart(start,end){
             exportEnabled: true,
             animationEnabled: true,
             data: [{
-                type: "pie",
+                type: "bar",
                 startAngle: 25,
                 toolTipContent: "<b>{label}</b>: {y} Qty",
                 showInLegend: "true",

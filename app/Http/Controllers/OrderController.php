@@ -92,7 +92,7 @@ class OrderController extends Controller
             $transaction-> balance = $request->balance;
             $transaction-> paid_amount = $request->paid_amount;
             $transaction-> payment_method = $request->payment_method;
-            $transaction-> transac_amount = $order_details->amount;
+            $transaction-> transac_amount = $request->grandtotal;
             $transaction-> transac_date = date('Y-m-d');
             $transaction->save();
 
@@ -167,5 +167,5 @@ return back()->with("Product Orders failed to be inserted! Please check your inp
         //
     }
 
-  
+    
 }

@@ -34,6 +34,13 @@ Route::prefix('product-desctroy')->group(function(){
 Route::prefix('product-retrieve')->group(function(){
     Route::post('/retrieve', 'ProductController@retrieve')->name('product-retrieve');
 });
+Route::prefix('orders-data')->group(function(){
+    Route::get('for-approval', 'OrderTransactionController@for_approval')->name('order-for-approval');
+});
+Route::prefix('reports')->group(function(){
+    Route::get('sales-report', 'HomeController@print_sales_report')->name('sales-report');
+    Route::get('product-report', 'HomeController@print_product_sales')->name('product-report');
+});
 Route::get('cashier', 'OrderController@index')->name('cashier-content');
 
 // ==============================

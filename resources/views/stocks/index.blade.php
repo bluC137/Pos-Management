@@ -21,7 +21,7 @@
                                     <th>Product ID</th>
                                     <th>Quantity</th>
                                     <th>Supplier</th>
-                                    <th>Receiver/User ID </th>
+                                    <th>Receiver </th>
                                     <th>Remarks</th>
                                     <th>Created at</th>
                                     <th>Updated at</th>
@@ -37,7 +37,7 @@
                                     <td>{{ $stock->supplier }}</td>
                                     <td>
 
-                                    {{$stock->user_id}}
+                                    {{$stock->receiver}}
                                    
                                     </td>
                                     <td>{{ $stock->remarks }}</td>
@@ -91,7 +91,8 @@
                                                         <textarea name="remarks" id="" cols="30" rows="2" value="{{ $stock->remarks }}" class="form-control">{{ $stock->remarks }}</textarea>
                                                     </div>
                                                     <div class="form-group">
-                                                        <input type="hidden" name="user_id" id="" value="{{ auth()->user()->id }}" class="form-control">
+                                                        <label for="">Receiver</label>
+                                                        <input type="text" name="user_id" id="" readonly value="{{ auth()->user()->name }}" class="form-control">
                                                     </div>
                                                     
                                                     <div class="modal-footer">
@@ -143,6 +144,14 @@
                     <div class="form-group">
                         <label for="">Quantity</label>
                         <input type="number" name="quantity" id="" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Based Price</label>
+                        <input type="number" name="based_price" id="" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Selling Price</label>
+                        <input type="number" name="price" id="" required class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="">Supplier</label>

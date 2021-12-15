@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Product;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     /**
@@ -20,11 +23,16 @@ class UserController extends Controller
         $user = Auth::user();
         $users =  User::paginate(5);
         $products = Product::all();
+
         if($user->is_admin==1){
+        return view('users.Aindex', ['users' => $users,'products' => $products]);
+        }
+        elseif($user->is_admin==0){
         return view('users.index', ['users' => $users,'products' => $products]);
-    }else{
+        }
+        else{
         return redirect(route('cashier-content'));
-    }
+        }
      
         
     }
@@ -39,6 +47,21 @@ class UserController extends Controller
         //
     }
 
+     /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -47,18 +70,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-       $request->password = 
-       $users = new User;
-                $users->name = $request->name;
-                $users->email = $request->email;
-                $users->password = md5($request->password);
-                $users->is_admin = $request->is_admin;
-                $users->save();
+      
+        $users = User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+            'is_admin' => $request['is_admin'],
+        ]);
        
-       if ($users) {
-          return redirect()->back()->with('User Created Successfully');
-       }
-          return redirect()->back()->with('Failed to Create User');
+        
+
+if ($users) {
+  return redirect()->back()->with('User Created Successfully');
+}
+  return redirect()->back()->with('Failed to Create User');
     }
 
     /**

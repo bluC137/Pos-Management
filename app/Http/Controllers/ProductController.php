@@ -22,9 +22,13 @@ class ProductController extends Controller
         $suppliers = Supplier::all();
 
         if($user->is_admin==1){
-            return view('products.index', ['products' => $products,'suppliers' => $suppliers]);
-        }else{
-            return redirect(route('cashier-content'));
+        return view('products.index', ['products' => $products,'suppliers' => $suppliers]);
+        }
+        elseif($user->is_admin==0){
+        return view('products.index', ['products' => $products,'suppliers' => $suppliers]);
+        }
+        else{
+        return redirect(route('cashier-content'));
         }
     }
 
@@ -75,6 +79,7 @@ class ProductController extends Controller
       $products -> supplier_id = $request->supplier_name;
       $products -> quantity = $request->quantity;
       $products -> price = $request->price;
+      $products -> based_price = $request->based_price;
       $products -> brand = $request->brand;
       $products -> alert_stock = $request->alert_stock;
       $products -> description = $request->description;
@@ -83,7 +88,6 @@ class ProductController extends Controller
 
       return redirect()->back()->with('Success', 'Product Created Successfully');
     }
-
     /**
      * Display the specified resource.
      *
@@ -167,6 +171,7 @@ class ProductController extends Controller
                 $products -> product_code = $product_code;
                 $products -> quantity = $request->quantity;
                 $products -> price = $request->price;
+                $products -> based_price = $request->based_price;
                 $products -> brand= $request->brand;
                 $products -> alert_stock= $request->alert_stock;
                 $products -> description= $request->description;
@@ -191,6 +196,9 @@ class ProductController extends Controller
         $product->save();
         return redirect()->back()->with('Success', 'Product Deleted Successfully');
     }
+
+
+
     public function retrieve(Request $request)
     {
         $data = $request->all();

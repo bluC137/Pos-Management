@@ -6,6 +6,7 @@ use App\Order_Detail;
 use App\Product;
 use App\User;
 use App\Order;
+use App\Returned;
 use Livewire\Component;
 
 class Transactions extends Component
@@ -42,6 +43,6 @@ class Transactions extends Component
 
     public function render()
     {
-        return view('livewire.transactions', ['transactions'=>Transaction::paginate(5)]);
+        return view('livewire.transactions', ['transactions'=>Transaction::paginate(5),'returns'=>Returned::paginate(5)]);
     }
 }

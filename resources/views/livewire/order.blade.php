@@ -6,6 +6,9 @@
                     <h4 style="float: left"> Cashier</h4>
                     <!-- <a href="http://" style="float:right; background-color: white; color:black; outline-color: #66fcf1; outline-width: 100px" class="btn btn-info" data-toggle="modal" data-target="#addproduct">
                         <i class="fa fa-plus"></i> Add New Products</a> -->
+                    <div class="form-group" align="center">
+                        <button class="btn btn-info text-white" style="float:right;" id="refresh" type="button"><span class="fa fa-refresh text-white"></span> Refresh</button>
+                    </div>
                 </div>
 
                 <!-- <form action=" {{ route('orders.store')}}" method="post">
@@ -37,7 +40,7 @@
                         {{ session('error')}}
                     </div>
                     @endif
-
+                   
                     <table class="table table-bordered table-left">
                         <thead>
                             <tr>
@@ -80,7 +83,25 @@
                                     <input type="number"  class="form-control" readonly name="price_data[]" id="price{{$cart->id}}" data-id="{{$cart->id}}" value="{{ $cart->product_price }}">
                                 </td>
                                 <td>
-                                    <input type="text" maxlength="2" onkeypress="return isNumberKey(event)" value="{{$cart->discount_percentage*100}}" name="discount-data[]" id="discount{{$cart->id}}" data-id="{{$cart->id}}" class="form-control" >
+                                    @php 
+                                        $mode = 'is-valid';
+                                        $label = '';
+                                        if(!empty($cart->temp_discount)){
+                                            if($cart->discount_status==0){
+                                                $label = 'FOR APPROVAL';
+                                                $mode = 'is-invalid'; 
+                                            }
+                                        }else{
+                                            $mode = '';
+                                        }
+                                    @endphp
+                                    <b class="text-danger">{{$label}}</b> 
+                                    @if($cart->discount_status == 0)
+                                    @if(intval($cart->discount)>0)
+                                    <br class="m-0"> Recent discount:<br class="m-0">  PHP {{number_format($cart->discount,2)}}
+                                    @endif
+                                    @endif
+                                    <input type="text" maxlength="2" onkeypress="return isNumberKey(event)" value="{{$cart->discount_percentage*100}}" name="discount-data[]" id="discount{{$cart->id}}" data-id="{{$cart->id}}" class="form-control {{$mode}}" >
                                 </td>
                                 <td>
                                     <input type="text" onkeypress="return isNumberKey(event)" 
@@ -117,6 +138,7 @@
                     <input type="hidden" name="price[]" class="form-control price" value="{{ $cart->product_price }}">
                     <input type="hidden" name="discount[]" class="form-control discount" value="{{$cart->discount}}">
                     <input type="hidden" name="total_amount[]" value="{{$cart->product_qty * $cart->product_price - floatval($cart->discount) }}" class="form-control total_amount">
+                  
                     @endforeach
                     <div class="card-body">
                         <div class="btn-group">
@@ -169,6 +191,11 @@
                                 <td>
                                     Returning Change <input type="number" readonly name="balance" id="balance" class="form-control">
                                 </td>
+
+                                <td>
+                                    <input type="hidden" name="grandtotal" class="form-control discount" value="{{ $total_grand }}">
+                                </td>
+                                
                                 <td>
                                     <button style = "background-color: #1f2833" class="btn-primary btn-lg btn-block mt-3">Save</button>
                                 </td>

@@ -21,6 +21,7 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @yield('stylesheet')
     @livewireStyles
 </head>
 
@@ -167,6 +168,34 @@
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         @livewireScripts
 </body>
+<script>
+     $(document).ready(function(index){
+         $('#count-discount').hide();
+         $.post("{{route('home-functions',['id' => 'count-for-approval'])}}",
+            {
+                "_token": "{{ csrf_token() }}",
+            },
+            function(data){
+                 if(data>0){
+                    $('#count-discount').show();
+                    $('#count-discount').text(data);
+                 }
+            });
+        setInterval(function () {
+            $.post("{{route('home-functions',['id' => 'count-for-approval'])}}",
+            {
+                "_token": "{{ csrf_token() }}",
+            },
+            function(data){
+                 if(data>0){
+                    $('#count-discount').show();
+                    $('#count-discount').text(data);
+                 }
+            });
+        }, 5000);
+    });
+</script>
 @yield('script')
+
 
 </html>

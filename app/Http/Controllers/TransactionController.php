@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Transaction;
 use App\Product;
 use App\Order_Detail;
+use App\Returned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class TransactionController extends Controller
@@ -16,14 +17,20 @@ class TransactionController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $returns = Returned::all();
         $products = Product::all();
         $orderdetails = Order_Detail::all();
         $transactions = Transaction::all();
+     
         if($user->is_admin==1){
-        return view('transactions.index', ['transactions' => $transactions,'products' => $products,'orderdetails' => $orderdetails]);
-    }else{
+        return view('transactions.index', ['transactions' => $transactions,'products' => $products,'returns' => $returns,'orderdetails' => $orderdetails]);
+        }
+        elseif($user->is_admin==0){
+        return view('transactions.index', ['transactions' => $transactions,'products' => $products,'returns' => $returns,'orderdetails' => $orderdetails]);
+        }
+        else{
         return redirect(route('cashier-content'));
-    }
+        }
     }
 
     /**

@@ -5,11 +5,11 @@
         <div><center>
         <img data-toggle="modal" data-target="#productPreview{{ $product->id }}" src="{{ asset('product/image/' .$product->product_image) }}" width="100" height="100" style=" cursor: pointer;" alt="">
     <center></div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for=""> Product ID </label>
             <input type="text" class="form-control" value="{{ $product->id }}" readonly>
 
-        </div>
+        </div> -->
     </div>
 
     <div class="col-md-12">

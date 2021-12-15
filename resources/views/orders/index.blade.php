@@ -11,7 +11,7 @@
         </div>
     </div>
 </div>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
     .modal.right .modal-dialog {
 
@@ -128,17 +128,17 @@
         }
 
         $.post("{{route('home-functions',['id' => 'save-cart'])}}",
-            {
-                "_token": "{{ csrf_token() }}",
-                id:id,
-                grand_total:grand_total,
-                price:price,
-                discount_percetage:discount_percetage,
-                total_discount:total_discount
+        {
+            "_token": "{{ csrf_token() }}",
+            id:id,
+            grand_total:grand_total,
+            price:price,
+            discount_percetage:discount_percetage,
+            total_discount:total_discount
 
-            },
-            function(data){
-                location.reload(); 
+        },
+        function(data){
+            location.reload(); 
         });
 
     });
@@ -191,6 +191,8 @@
         $('.addMoreProduct').append(tr);
     });
 
+
+
     //Delete a row
     // $('.addMoreProduct').delegate('.delete', 'click', function() {
     //     $(this).parent().parent().remove();
@@ -227,6 +229,9 @@
         var total_amount = (qty * price) - ((qty * price * disc) / 100);
         tr.find('.total_amount').val(total_amount);
         TotalAmount();
+    });
+    $(document).on('click','#refresh',function(){
+        location.reload();
     });
     $(document).on('change','#paid_amount',function(){
         // var total = $('.total').html();

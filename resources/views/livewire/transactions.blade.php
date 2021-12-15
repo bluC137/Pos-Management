@@ -17,5 +17,19 @@
                 </div>
             </div>
 
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header" style="background: #1f2833; color: #edf6ff">
+                        <h4>Returned Items</h4>
+                    </div>
+                    <div class="card-body">
+                    
+                        @include('transactions.returned')
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
           
            

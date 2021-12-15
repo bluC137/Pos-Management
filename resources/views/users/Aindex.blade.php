@@ -42,12 +42,21 @@
                                         @endif</td>
                                     <td>
                                         <div class="btn-group">
-                                         
+
+                                            @if ($user->is_admin == 1 or $user->is_admin == 0) 
+                                           
+                                            @else
                                             <a href="" class="btn btn-info btn-sm" data-toggle="modal" data-target="#notS{{ $user->id }}"> <i class=" fa fa-edit">
                                                 </i> Edit</a>
- 
+                                            @endif
+                                            
+                                            @if ($user->is_admin == 1 or $user->is_admin == 0) 
+                                           
+                                            @else
                                             <a href="" data-toggle="modal" data-target="#deleteUser{{ $user->id }}" class="btn btn-sm btn-danger"><i class=" fa fa-trash">
-                                                </i> Delete</a>
+                                                </i> Delete</a> 
+                                            @endif
+                                            
                                         </div>
                                     </td>
                                 </tr>
